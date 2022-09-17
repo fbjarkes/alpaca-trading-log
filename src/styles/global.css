@@ -1,12 +1,10 @@
-html,
 body {
     font-family: 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Helvetica',
-        'Arial', sans-serif;
+      'Arial', sans-serif;
     padding: 20px 20px 60px;
     max-width: 680px;
-    background-color: aliceblue;
-    font-style: oblique;
-}
+    margin: 0 auto;
+  }
 
 h1 {
     margin: var(--gap-double) 0 calc(0.5 * var(--gap)) 0;
@@ -17,7 +15,7 @@ h1 {
 
 h2 {
     font-weight: 100;
-    font-size: 0.25rem;
+    font-size: 1.25rem;
     letter-spacing: -0.02rem;
     color: var(--accents-3);
 }

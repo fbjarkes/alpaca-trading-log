@@ -132,3 +132,4 @@ $RECYCLE.BIN/
 
 # Custom
 dist/
+.next

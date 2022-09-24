@@ -6,26 +6,32 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 
 import styles from '../styles/Dashboard.module.css';
+import { Trade } from 'src/utils/types';
+
+const data = Array.from({ length: 150 }, (_, i) => {
+    const t = 100 + Math.random() * 100;
+    return new Trade(
+        `SPY`,
+        10 + Math.floor(Math.random() * 10),
+        t,
+        Math.random() > 0.5 ? t + Math.random() * 20 : t - Math.random() * 20,
+    );
+});
 
 function Dashboard() {
-    // TODO: make sure ag-grid community supports all data types needed, both sorting, filtering, presentation and 100+ rows or pagination
-    const [rowData] = useState([
-        { make: 'Toyota', model: 'Celica', price: 35000 },
-        { make: 'Ford', model: 'Mondeo', price: 32000 },
-        { make: 'Porsche', model: 'Boxster', price: 72000 },
-    ]);
+    const [rowData, setRowData] = useState(data);
 
     const [columnDefs] = useState([
-        { field: 'price', sortable: true, filter: 'agNumberColumnFilter' },
-        { field: 'make', sortable: true, filter: true },
-        { field: 'model', sortable: true, filter: true },
+        { field: 'symbol', sortable: true, filter: true, minWidth: 150 },
+        { field: 'quantity', sortable: true, filter: 'agNumberColumnFilter' },
+        { field: 'pnl', sortable: true, filter: 'agNumberColumnFilter' },
     ]);
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             <Button>HELLO</Button>
-            <div className="ag-theme-alpine" style={{ width: 500, height: 500 }}>
-                <AgGridReact rowData={rowData} columnDefs={columnDefs}></AgGridReact>
+            <div className="ag-theme-alpine" style={{ width: '100%', height: 1000 }}>
+                <AgGridReact rowData={rowData} columnDefs={columnDefs} pagination={true}></AgGridReact>
             </div>
         </div>
     );

@@ -9,17 +9,25 @@ import { TradesForm } from 'src/components/TradesForm';
 const App: NextPage = () => {
     return (
         <>
-            <Container>
-                <Row>
-                    <Col>
-                        <TradesForm />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <TradesTable />
-                    </Col>
-                </Row>
+            <Container
+                fluid
+                className="App"
+                style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minHeight: '100vh',
+                    height: '100%',
+                    width: '100%',
+                    maxWidth: '1000px',
+                    margin: 'auto',
+                }}
+            >
+                <div style={{ flexShrink: '0' }}>
+                    <TradesForm />
+                </div>
+                <div style={{ flex: '1 0 auto', height: '100%' }}>
+                    <TradesTable />
+                </div>
             </Container>
         </>
     );

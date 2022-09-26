@@ -18,7 +18,7 @@ const data = Array.from({ length: 150 }, (_, i) => {
     );
 });
 
-function Dashboard() {
+function TradesTable() {
     const [rowData, setRowData] = useState(data);
 
     const [columnDefs] = useState([
@@ -29,7 +29,6 @@ function Dashboard() {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <Button>HELLO</Button>
             <div className="ag-theme-alpine" style={{ width: '100%', height: 1000 }}>
                 <AgGridReact rowData={rowData} columnDefs={columnDefs} pagination={true}></AgGridReact>
             </div>
@@ -37,4 +36,4 @@ function Dashboard() {
     );
 }
 
-export default Dashboard;
+export default TradesTable;

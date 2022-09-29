@@ -2,6 +2,7 @@ import React, { ChangeEvent, useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
+import Stack from 'react-bootstrap/Stack';
 import Button from 'react-bootstrap/Button';
 
 import 'react-datepicker/dist/react-datepicker.css';
@@ -12,43 +13,24 @@ export const TradesForm: React.FC<{}> = () => {
 
     return (
         <>
-            <div
-                className="Header"
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'start',
-                    gap: '10px',
-                    marginTop: '10px',
-                    marginBottom: '10px',
-                }}
-            >
-                <div
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'start',
-                        gap: '2px',
-                    }}
-                >
-                    <Form.Label htmlFor="basic-url">Start date</Form.Label>
-                    <InputGroup className="mb-3">
-                        <DatePicker selected={startDate} onChange={(date: Date) => setStartDate(date)} />
-                        <Form.Control id="basic-url" aria-describedby="basic-addon3" />
-                    </InputGroup>
-                    <Form.Label htmlFor="basic-url">Start date</Form.Label>
-                    <InputGroup className="mb-3">
-                        <DatePicker selected={endDate} onChange={(date: Date) => setSendDate(date)} />
-                        <Form.Control id="basic-url" aria-describedby="basic-addon3" />
-                    </InputGroup>
-
+            <Stack direction="horizontal" gap={3}>
+                <div className="box">
+                    <div className="label">Start date:</div>
                     <div>
-                        <Button variant="primary" type="submit">
-                            Submit
-                        </Button>
+                        <DatePicker selected={startDate} onChange={(date: Date) => setStartDate(date)} />
                     </div>
                 </div>
-            </div>
+                <div className="box">
+                    <div className="label">End date:</div>
+                    <div>
+                        <DatePicker selected={endDate} onChange={(date: Date) => setSendDate(date)} />
+                    </div>
+                </div>
+                <div className="vr" />
+                <div className="">
+                    <Button variant="secondary">Submit</Button>
+                </div>
+            </Stack>
         </>
     );
 };

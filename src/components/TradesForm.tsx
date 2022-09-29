@@ -8,8 +8,9 @@ import Button from 'react-bootstrap/Button';
 import 'react-datepicker/dist/react-datepicker.css';
 
 export const TradesForm: React.FC<{}> = () => {
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setSendDate] = useState(new Date());
+    const today = new Date();
+    const [startDate, setStartDate] = useState(new Date(new Date().setDate(today.getDate() - 7)));
+    const [endDate, setEndDate] = useState(today);
 
     return (
         <>
@@ -23,7 +24,7 @@ export const TradesForm: React.FC<{}> = () => {
                 <div className="box">
                     <div className="label">End date:</div>
                     <div>
-                        <DatePicker selected={endDate} onChange={(date: Date) => setSendDate(date)} />
+                        <DatePicker selected={endDate} onChange={(date: Date) => setEndDate(date)} />
                     </div>
                 </div>
                 <div className="vr" />

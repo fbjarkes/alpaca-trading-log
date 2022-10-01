@@ -7,7 +7,7 @@ import Button from 'react-bootstrap/Button';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
-export const TradesForm: React.FC<{}> = () => {
+export const TradesForm: React.FC<{ fetchTrades(start: number, end: number): void }> = ({ fetchTrades }) => {
     const today = new Date();
     const [startDate, setStartDate] = useState(new Date(new Date().setDate(today.getDate() - 7)));
     const [endDate, setEndDate] = useState(today);
@@ -29,7 +29,14 @@ export const TradesForm: React.FC<{}> = () => {
                 </div>
                 <div className="vr" />
                 <div className="">
-                    <Button variant="secondary">Submit</Button>
+                    <Button
+                        variant="secondary"
+                        onClick={() => {
+                            fetchTrades(startDate.getTime(), endDate.getTime());
+                        }}
+                    >
+                        Submit
+                    </Button>
                 </div>
             </Stack>
         </>

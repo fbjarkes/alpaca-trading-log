@@ -133,3 +133,5 @@ $RECYCLE.BIN/
 # Custom
 dist/
 .next
+.env.*
+tester.ts

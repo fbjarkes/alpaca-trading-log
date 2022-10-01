@@ -10,6 +10,7 @@
         "no-unused-vars": 1
     },
     "globals": {
-        "console": "writable"
+        "console": "writable",
+        "process": true
     }
 }

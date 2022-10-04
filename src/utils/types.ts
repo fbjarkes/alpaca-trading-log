@@ -43,3 +43,9 @@ export type OpenTrade = {
     direction: string;
     entryDate: string;
 };
+
+export type FormState = {
+    start: number;
+    end: number;
+    includeOpen: boolean;
+};

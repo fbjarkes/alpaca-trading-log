@@ -3,7 +3,7 @@ import axios from 'axios';
 import { NextPage } from 'next';
 import { TradesForm } from 'src/components/TradesForm';
 import { TradesTable } from 'src/components/TradesTable';
-import { OpenTrade, Trade } from 'src/utils/types';
+import { FormState, OpenTrade, Trade } from 'src/utils/types';
 import { NumberSequence } from 'ag-grid-community';
 import { useState } from 'react';
 
@@ -57,12 +57,43 @@ const fetchActivities = async (start: string, end: string) => {
     return trades;
 };
 
-const connectTrades = (activities: any[]): Trade[] => {
+const connectTrades = (activities: any[], includeOpen: boolean): Trade[] => {
     const activeTrades = new Map<string, OpenTrade>();
     const trades: Trade[] = [];
     const incomplete: Trade[] = [];
 
     activities.reverse().forEach((act) => {
+        // TODO: handle partial fills. Example:
+        /**
+         * {
+            "id": "20220927123008292::3b6d33ff-521a-42e7-8935-d75930878aa7",
+            "activity_type": "FILL",
+            "transaction_time": "2022-09-27T16:30:08.292022Z",
+            "type": "partial_fill",
+            "price": "77.79",
+            "qty": "55",
+            "side": "sell_short",
+            "symbol": "BABA",
+            "leaves_qty": "32",
+            "order_id": "80b7a103-15ea-41fc-946b-bcb60d7f74aa",
+            "cum_qty": "55",
+            "order_status": "partially_filled"
+        }
+         * {
+            "id": "20220927123008566::86e3d6f6-7fea-4623-b3d2-4d4e1c0d8a22",
+            "activity_type": "FILL",
+            "transaction_time": "2022-09-27T16:30:08.566813Z",
+            "type": "fill",
+            "price": "77.79",
+            "qty": "32",
+            "side": "sell_short",
+            "symbol": "BABA",
+            "leaves_qty": "0",
+            "order_id": "80b7a103-15ea-41fc-946b-bcb60d7f74aa",
+            "cum_qty": "87",
+            "order_status": "filled"
+        }
+         */
         if (activeTrades.has(act.symbol)) {
             const open = activeTrades.get(act.symbol);
 
@@ -138,18 +169,37 @@ const connectTrades = (activities: any[]): Trade[] => {
     console.log(
         `Connected ${trades.length} trades, ${incomplete.length} incomplete trades, and ${activeTrades.size} still active`,
     );
-    return trades.concat(incomplete);
+    if (includeOpen) {
+        const openTrades = Array.from(activeTrades.values()).map(
+            (active: OpenTrade) =>
+                new Trade(
+                    active.symbol,
+                    active.qty,
+                    active.price,
+                    active.price,
+                    active.direction === 'SHORT' ? 'SHORT' : 'N/A',
+                    new Date(active.entryDate),
+                    new Date(active.entryDate),
+                ),
+        );
+        return trades.concat(incomplete).concat(openTrades);
+    } else {
+        return trades.concat(incomplete);
+    }
 };
 
 const App: NextPage = () => {
     const [trades, setTrades] = useState<Trade[]>([]);
 
-    const fetchTrades = async (start: number, end: number) => {
-        console.log(`Fetch: start=${start}, end=${end}`);
+    const fetchTrades = async (input: FormState) => {
+        console.log(`Fetch: start=${input.start}, end=${input.end}`);
         //TODO: move fetchActivities to 'data fetching methods' or 'API routes'?
-        const activities = await fetchActivities(new Date(start).toISOString(), new Date(end).toISOString());
+        const activities = await fetchActivities(
+            new Date(input.start).toISOString(),
+            new Date(input.end).toISOString(),
+        );
         console.log(`Got ${activities.length} actitivites`);
-        const data = connectTrades(activities);
+        const data = connectTrades(activities, input.includeOpen);
         setTrades(data);
     };
 

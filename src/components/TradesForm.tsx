@@ -6,11 +6,13 @@ import Stack from 'react-bootstrap/Stack';
 import Button from 'react-bootstrap/Button';
 
 import 'react-datepicker/dist/react-datepicker.css';
+import { FormState } from 'src/utils/types';
 
-export const TradesForm: React.FC<{ fetchTrades(start: number, end: number): void }> = ({ fetchTrades }) => {
+export const TradesForm: React.FC<{ fetchTrades(input: FormState): void }> = ({ fetchTrades }) => {
     const today = new Date();
     const [startDate, setStartDate] = useState(new Date(new Date().setDate(today.getDate() - 7)));
     const [endDate, setEndDate] = useState(today);
+    const [includeOpen, setIncludeOpen] = useState(true);
 
     return (
         <>
@@ -27,12 +29,23 @@ export const TradesForm: React.FC<{ fetchTrades(start: number, end: number): voi
                         <DatePicker selected={endDate} onChange={(date: Date) => setEndDate(date)} />
                     </div>
                 </div>
+                <div className="box">
+                    <Form.Check
+                        inline
+                        label="Include open trades"
+                        type="checkbox"
+                        checked={includeOpen}
+                        onChange={() => {
+                            setIncludeOpen(!includeOpen);
+                        }}
+                    />
+                </div>
                 <div className="vr" />
                 <div className="">
                     <Button
                         variant="secondary"
                         onClick={() => {
-                            fetchTrades(startDate.getTime(), endDate.getTime());
+                            fetchTrades({ start: startDate.getTime(), end: endDate.getTime(), includeOpen });
                         }}
                     >
                         Submit

@@ -10,8 +10,11 @@ import { Trade } from 'src/utils/types';
 
 export const TradesTable: React.FC<{ trades: Trade[] }> = ({ trades }) => {
     const [columnDefs] = useState([
-        { field: 'symbol', sortable: true, filter: true, minWidth: 150 },
+        { field: 'entryDate', sortable: true, filter: true },
+        { field: 'exitDate', sortable: true, filter: true },
+        { field: 'symbol', sortable: true, filter: true, minWidth: 100 },
         { field: 'quantity', sortable: true, filter: 'agNumberColumnFilter' },
+        { field: 'side', sortable: true, filter: true },
         { field: 'pnl', sortable: true, filter: 'agNumberColumnFilter' },
     ]);
 

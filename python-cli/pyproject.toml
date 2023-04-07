@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "python-cli"
+version = "0.1.0"
+description = ""
+authors = ["fbjarkes <fbjarkes-github.q5706@aleeas.com>"]
+readme = "README.md"
+packages = [{include = "python_cli"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fire = "^0.5.0"
+pandas = "^2.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

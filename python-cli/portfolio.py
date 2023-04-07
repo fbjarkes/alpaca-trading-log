@@ -4,11 +4,11 @@ import datetime
 import fire
 
 class Trade:
-    def __init__(self, symbol, qty, entry, exit, side, open_date, close_date):
+    def __init__(self, symbol, qty, entry, exit, side, open_date, close_date, pnl):
         self.symbol = symbol
         self.qty = qty
         self.side = side
-        self.pnl = 0
+        self.pnl = pnl
         self.open_date = open_date
         self.close_date = close_date
         self.entry = entry
@@ -16,14 +16,13 @@ class Trade:
 
 class OpenTrade:
     
-    def __init__(self, symbol, qty, side, open_date, entry):
+    def __init__(self, symbol, qty, side, open_date, entry_price):
         self.symbol = symbol
-        self.qty = qty
+        self.qty = float(qty)
         self.side = side
-        self.entry = entry
+        self.entry = float(entry_price[1:])
         self.date = datetime.datetime.strptime(open_date, '%Y-%m-%d %H:%M:%S')
         
-
 class Portfolio:
     def __init__(self):
         self.trades = []
@@ -45,14 +44,14 @@ def process_trades(csv_file):
         print(f"Processing {row['Symbol']}: {row['Filled at']} {row['Submitted at']}")
         
         # check if open_trades contains a trade for this symbol
-        open_trades = [t for t in open_trades if t.symbol == row['Symbol']]
-        if len(open_trades) > 1:
+        tmp = [t for t in open_trades if t.symbol == row['Symbol']]
+        if len(tmp) > 1:
             print(f"ERROR: more than one open trade for {row['Symbol']}")
-        elif len(open_trades) == 1:
+        elif len(tmp) == 1:
             print(f"[*] Closing trade for {row['Symbol']}...")
-            ot: OpenTrade = open_trades[0]
-            qty = row['Filled Qty']
-            exit_price = row['Filled Avg Price']
+            ot: OpenTrade = tmp[0]
+            qty = float(row['Filled Qty'])
+            exit_price = float(row['Filled Avg Price'][1:])
             closed_date = datetime.datetime.strptime(row['Filled at'], '%Y-%m-%d %H:%M:%S')
             if qty != ot.qty:
                 print(f"ERROR: open trade qty does not match filled qty for {row['Symbol']}")
@@ -68,7 +67,7 @@ def process_trades(csv_file):
         else:
             if row['Type'] == 'market':
                 longShort = 'LONG' if row['Side'] == 'buy' else 'SHORT'
-                open_trade = OpenTrade(row['Symbol'], row['Filled Qty'], longShort, open_date=row['Filled at'], entry=row['Filled Avg Price'])
+                open_trade = OpenTrade(row['Symbol'], row['Filled Qty'], longShort, open_date=row['Filled at'], entry_price=row['Filled Avg Price'])
                 open_trades.append(open_trade)
                 print(f"OpenTrade: {open_trade.symbol} {open_trade.qty} {open_trade.side} {open_trade.entry} {open_trade.date}")
             else:
@@ -76,7 +75,8 @@ def process_trades(csv_file):
     
         
     for trade in portfolio.trades:
-        print(f"{trade.symbol}: {trade.filled_at} {trade.side} {trade.filled_qty} {trade.pnl}")
+        print(f"Trade: {trade.symbol} {trade.qty} {trade.side} {trade.entry} {trade.exit} {trade.open_date} {trade.close_date} {trade.pnl}")
+    print(f"Total PnL: {sum([t.pnl for t in portfolio.trades])} ({len(portfolio.trades)} trades")
 
 if __name__ == '__main__':
     fire.Fire(process_trades, 'test.csv')
